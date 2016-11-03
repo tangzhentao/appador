@@ -1,0 +1,3 @@
+#!/usr/bin/env python
+
+print ('{0} appador {1}'.format('*'*10, '*'*10))
