@@ -1,0 +1,35 @@
+目标
+
+一键发布伯乐
+
+归档
+
+导出ipa
+
+发布到AppStore
+
+发布到firm
+
+一键发布因上传失败时 可重试上传
+
+阶段播报：
+文字提示处于哪个阶段，正在归档，归档完成……
+语音提示
+
+appador：
+	archive
+		--path
+		--workspace
+		--project
+		--debug
+		--release
+
+	export
+		--archivePath
+		--ipaPath
+
+	upload
+		--ipaPath
+		--user
+		--password
+		--platform fir appstore

@@ -1,3 +1,63 @@
 #!/usr/bin/env python
 
-print ('{0} appador {1}'.format('*'*10, '*'*10))
+'''
+1. archive iOS project or workspace
+2. exoprt ipa
+3. distribute ipa to test server
+4. distribute ipa to AppStore
+5. one key archive, export ipa and distribute to test server
+6. one key archive, export ipa and distribute to AppStore
+'''
+
+import argparse
+
+# main-command and sub-command functions
+def oneKeyDistribute(args):
+    print ('appador: {0}'.format(args.path))
+
+def archive(args):
+    print ('archive: {0}'.format(args.path))
+
+def exportIPA(args):
+    print ('exportIPA: {0}'.format(args.path))
+
+def distribute(args):
+    print ('distribute: {0}, server: {1}'.format(args.path, args.server))
+
+def ignite(args):
+    print ('ignite: {0}, server: {1}'.format(args.path, args.server))
+
+# create the top-leverl parser
+parser = argparse.ArgumentParser()
+
+subparsers = parser.add_subparsers()
+
+# create the parser for the 'archive' command
+archiveParser = subparsers.add_parser('archive', help = 'archive project/workspace')
+archiveParser.add_argument('--path', help = 'project/workspace path', required = True)
+archiveParser.set_defaults(func = archive)
+
+# create the parser for the 'exportIPA' command
+exportIPAParser = subparsers.add_parser('exportIPA', help = 'export ipa file')
+exportIPAParser.add_argument('--path', help = 'archive file patha', required = True)
+exportIPAParser.set_defaults(func = exportIPA)
+
+# create the parser for the 'distribute' command
+distributeParser = subparsers.add_parser('distribute', help = 'distribute ipa file to test server/AppStore')
+distributeParser.add_argument('--path', help = 'ipa file path', required = True)
+distributeParser.add_argument('server', help = 'the server to upload', nargs = '?', choices = ['firm', 'AppStore'], default = 'firm')
+distributeParser.set_defaults(func = distribute)
+
+# create the parser for the 'ignite' command
+igniteParser = subparsers.add_parser('ignite', help = 'automatically archive, export ipa and distribute')
+igniteParser.add_argument('--path', help = 'project/workspace path', required = True)
+igniteParser.add_argument('server', help = 'the server to upload', nargs ='?', choices = ['firm', 'AppStore'], default = 'firm')
+igniteParser.set_defaults(func = ignite)
+
+# parse the args and call whatever function was selected
+args = parser.parse_args()
+args.func(args)
+
+#group = parser.add_mutually_exclusive_group()
+
+#print ('{0} appador {1}'.format('*'*10, '*'*10))
