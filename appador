@@ -59,5 +59,3 @@ args = parser.parse_args()
 args.func(args)
 
 #group = parser.add_mutually_exclusive_group()
-
-#print ('{0} appador {1}'.format('*'*10, '*'*10))
