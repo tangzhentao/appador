@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 '''
+appador: app archive/distribute tool
 1. archive iOS project or workspace
 2. exoprt ipa
 3. distribute ipa to test server
@@ -10,11 +11,10 @@
 '''
 
 import argparse
+import iTunesConnectManager
+import iTunesConnect
 
 # main-command and sub-command functions
-def oneKeyDistribute(args):
-    print ('appador: {0}'.format(args.path))
-
 def archive(args):
     print ('archive: {0}'.format(args.path))
 
@@ -26,6 +26,34 @@ def distribute(args):
 
 def ignite(args):
     print ('ignite: {0}, server: {1}'.format(args.path, args.server))
+
+def iTunesConnects(args):
+    #print vars(args)
+
+    # create iTunesConnectManager
+    icm = iTunesConnectManager.iTunesConnectManager()
+    if args.list:
+        icm.printDb()
+    elif args.current_selected:
+        ic = icm.selectediTunesConnect()
+        if ic:
+            print ic
+        else:
+            print ('No iTunes connect is selected!')
+    elif args.add:
+        icInfo = args.add
+        # create iTunesConnect
+        ic = iTunesConnect.iTunesConnect(username = icInfo[0], password = icInfo[1], tag = icInfo[2])
+        # add iTunesConnect
+        icm.addiTunesConnect(ic)
+    elif args.remove:
+        icm.removeiTunesConnectByTag(args.remove)
+    elif args.select:
+        icm.selectiTunesConnectByTag(args.select)
+    else:
+        pass
+
+
 
 # create the top-leverl parser
 parser = argparse.ArgumentParser()
@@ -44,7 +72,7 @@ exportIPAParser.set_defaults(func = exportIPA)
 
 # create the parser for the 'distribute' command
 distributeParser = subparsers.add_parser('distribute', help = 'distribute ipa file to test server/AppStore')
-distributeParser.add_argument('--path', help = 'ipa file path', required = True)
+distributeParser.add_argument('-l', '--list', help = 'list config', action = 'store_true')
 distributeParser.add_argument('server', help = 'the server to upload', nargs = '?', choices = ['firm', 'AppStore'], default = 'firm')
 distributeParser.set_defaults(func = distribute)
 
@@ -54,8 +82,16 @@ igniteParser.add_argument('--path', help = 'project/workspace path', required = 
 igniteParser.add_argument('server', help = 'the server to upload', nargs ='?', choices = ['firm', 'AppStore'], default = 'firm')
 igniteParser.set_defaults(func = ignite)
 
+# create the parser for the 'iTunesConnects' command
+icsParser = subparsers.add_parser('iTunesConnects', description = 'manager iTunes Connect accounts', help = 'manager iTunes connect accounts')
+icsGroup = icsParser.add_mutually_exclusive_group(required = True)
+icsGroup.add_argument('-l', '--list', help = 'list all iTunes connet accounts', action = 'store_true')
+icsGroup.add_argument('-cs', '--current-selected', help = 'list current selected iTunes connet account', action = 'store_true')
+icsGroup.add_argument('-a', '--add', nargs = 3, metavar = ('username', 'password', 'tag'), help = 'add iTunes connet account to iTunesConnects and associate it with tag. the tag is unique')
+icsGroup.add_argument('-r', '--remove', metavar = 'tag', help = 'remove iTunes connet account from iTunesConnects')
+icsGroup.add_argument('-s', '--select', metavar = 'tag', help = 'select an iTunes connet account from iTunesConnects')
+icsParser.set_defaults(func = iTunesConnects)
+
 # parse the args and call whatever function was selected
 args = parser.parse_args()
 args.func(args)
-
-#group = parser.add_mutually_exclusive_group()

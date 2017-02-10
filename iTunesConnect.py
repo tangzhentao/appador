@@ -4,17 +4,22 @@ iTunes Connect account
 used for distributing app to AppStore
 '''
 
+import classtools
+
 class iTunesConnect:
-    def __init__(self, tag, username, password):
+    def __init__(self, username, password, tag):
         self.tag = tag
         self.username = username
         self.password = password
+        self.selected = False
+
+    def __str__(self):
+        selected_flag = ''
+        if self.selected:
+            selected_flag = '*'
+        des = '[%s: username: %s, password: %s, tag: %s]%s' % (self.__class__.__name__, self.username, self.password, self.tag, selected_flag)
+        return des
     
-    def display(self):
-        print (self.__class__.__name__)
-        print ('\ttag: %s\n \tusername: %s\n \tpassword: %s'% (self.tag, self.username, self.password))
-
-
 if __name__ == '__main__':
-    emama = iTunesConnect('emama', 'zhonghelida', 'zhonghelida123')
-    emama.display()
+    emama = iTunesConnect('zhonghelida', 'zhonghelida123', 'emama')
+    print emama
