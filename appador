@@ -13,6 +13,8 @@ appador: app archive/distribute tool
 import argparse
 import iTunesConnectManager
 import iTunesConnect
+import sys
+import distributer
 
 # main-command and sub-command functions
 def archive(args):
@@ -22,7 +24,60 @@ def exportIPA(args):
     print ('exportIPA: {0}'.format(args.path))
 
 def distribute(args):
-    print ('distribute: {0}, server: {1}'.format(args.path, args.server))
+    print ('distribute:')
+    print (' ipa path: {0}\n server: {1}\n account: {2}\n account tag: {3}\n'.format(args.ipa_path, args.server, args.account, args.account_tag))
+    ipa_path = args.ipa_path
+    server = args.server
+
+    if server == 'AppStore':
+        # upload to AppStore
+        ic = getiTunesConnectWithArgs(args)
+        print ('iTunesConnect: %s' % (ic))
+        dister = distributer.AppStoreDistributer(ipa_path, ic)
+
+        # fire
+        dister.distribute()
+
+    elif server == 'firm':
+        # upload to firm
+        print ('implenment later!')
+        pass
+    else:
+        # support otehr platform in the future
+        pass
+
+
+
+def getiTunesConnectWithArgs(args):
+    '''
+    tool function:
+    get iTunesConnect by args
+    '''
+    # get iTunesConnect
+    account = args.account
+    ic = None
+    if account:
+        # passed accout
+        print ('passed account: %s' % (account))
+        ic = iTunesConnect.iTunesConnect(account[0], account[1])
+    else:
+        # no account passed,check account_tag
+        account_tag = args.account_tag
+        icm = iTunesConnectManager.iTunesConnectManager()
+        if account_tag:
+            # account_tag passed
+            print ('passed account tag: %s' % (account_tag))
+            ic = icm.iTunesConnectWithTag(account_tag)
+        else:
+            # check selected account
+            print ('check selected account.')
+            ic = icm.selectediTunesConnect()
+            if ic is None:
+                print ('Need a iTunesConnect account!')
+                sys.exit()
+
+    return ic
+
 
 def ignite(args):
     print ('ignite: {0}, server: {1}'.format(args.path, args.server))
@@ -72,8 +127,11 @@ exportIPAParser.set_defaults(func = exportIPA)
 
 # create the parser for the 'distribute' command
 distributeParser = subparsers.add_parser('distribute', help = 'distribute ipa file to test server/AppStore')
-distributeParser.add_argument('-l', '--list', help = 'list config', action = 'store_true')
-distributeParser.add_argument('server', help = 'the server to upload', nargs = '?', choices = ['firm', 'AppStore'], default = 'firm')
+distributeParser.add_argument('-ip', '--ipa-path', help = 'ipa file path', required = True)
+distributeParser.add_argument('-s', '--server', help = 'the server to upload', nargs = '?', choices = ['firm', 'AppStore'], default = 'AppStore', required = True)
+accoutGroup = distributeParser.add_mutually_exclusive_group(required = False) 
+accoutGroup.add_argument('-a', '--account', nargs = 2, metavar = ('username', 'password'), help = 'iTunes Connect account or firm accout, depand on "--server"')
+accoutGroup.add_argument('-at', '--account-tag', help = 'account tag')
 distributeParser.set_defaults(func = distribute)
 
 # create the parser for the 'ignite' command

@@ -140,6 +140,16 @@ class iTunesConnectManager:
                 break
 
         return selected_ic
+
+    def iTunesConnectWithTag(self, tag):
+        '''
+        return theiTunes connect account whose tag is passed tag
+        '''
+        # get db
+        db = self.getDb()
+        ic = db[tag]
+        return ic
+        
         
     def printDb(self):
         '''
