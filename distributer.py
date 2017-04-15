@@ -54,6 +54,7 @@ class AppStoreDistributer(Distributer):
         print ('ipa path: %s' % self.ipaPath)
         print ('iTunesConnect: %s\n'% self.iTunesConnect.username)
         print ('will distribute...')
+        # '%s': to handle white space in path
         command = "'%s' -f %s -t ios -u %s -p %s --upload-app" % (self.altool_path, self.ipaPath, self.iTunesConnect.username, self.iTunesConnect.password)
         print ('command: %s' % command)
         status = os.system(command)

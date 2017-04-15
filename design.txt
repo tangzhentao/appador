@@ -16,14 +16,15 @@
 文字提示处于哪个阶段，正在归档，归档完成……
 语音提示
 
+注意：
+ipa文件是文件
+project/workspace文件是目录
+可在终端中使用ls -l验证查看
 appador：
 	archive
-		--path
-		--workspace
-		--project
-		--debug
-		--release
-
+		--path // project/workspace path
+		--scheme // scheme
+		--archivePath // optional, archivie file path
 	export
 		--archivePath
 		--ipaPath

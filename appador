@@ -14,11 +14,15 @@ import argparse
 import iTunesConnectManager
 import iTunesConnect
 import sys
+import archiver
 import distributer
 
 # main-command and sub-command functions
 def archive(args):
-    print ('archive: {0}'.format(args.path))
+
+    archer = archiver.Archiver(args.path, args.scheme, args.archive_path)
+    archer.archive()
+
 
 def exportIPA(args):
     print ('exportIPA: {0}'.format(args.path))
@@ -117,7 +121,9 @@ subparsers = parser.add_subparsers()
 
 # create the parser for the 'archive' command
 archiveParser = subparsers.add_parser('archive', help = 'archive project/workspace')
-archiveParser.add_argument('--path', help = 'project/workspace path', required = True)
+archiveParser.add_argument('-p', '--path', help = 'project/workspace path', required = True)
+archiveParser.add_argument('-s', '--scheme', help = 'project/workspace scheme', required = True)
+archiveParser.add_argument('-ap', '--archive-path', help = 'output archive file path')
 archiveParser.set_defaults(func = archive)
 
 # create the parser for the 'exportIPA' command
