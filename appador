@@ -10,21 +10,22 @@ appador: app archive/distribute tool
 6. one key archive, export ipa and distribute to AppStore
 '''
 
+import sys
 import argparse
 import iTunesConnectManager
 import iTunesConnect
-import sys
 import archiver
+import exporter
 import distributer
 
 # main-command and sub-command functions
 def archive(args):
 
-    archer = archiver.Archiver(args.path, args.scheme, args.archive_path)
+    archer = archiver.Archiver(args.path, args.scheme, args.archivePath)
     archer.archive()
 
 
-def exportIPA(args):
+def exportArchive(args):
     print ('exportIPA: {0}'.format(args.path))
 
 def distribute(args):
@@ -123,13 +124,15 @@ subparsers = parser.add_subparsers()
 archiveParser = subparsers.add_parser('archive', help = 'archive project/workspace')
 archiveParser.add_argument('-p', '--path', help = 'project/workspace path', required = True)
 archiveParser.add_argument('-s', '--scheme', help = 'project/workspace scheme', required = True)
-archiveParser.add_argument('-ap', '--archive-path', help = 'output archive file path')
+archiveParser.add_argument('-ap', '--archivePath', help = 'specifies the directory where any created archives will be placed')
 archiveParser.set_defaults(func = archive)
 
-# create the parser for the 'exportIPA' command
-exportIPAParser = subparsers.add_parser('exportIPA', help = 'export ipa file')
-exportIPAParser.add_argument('--path', help = 'archive file patha', required = True)
-exportIPAParser.set_defaults(func = exportIPA)
+# create the parser for the 'exportArchive' command
+exportParser = subparsers.add_parser('exportArchive', help = 'export archive to ipa')
+exportParser.add_argument('-ap', '--archivePath', help = 'specifies the archive that should be exported', required = True)
+exportParser.add_argument('-ep', '--exportPath', help = 'specifies the destination for the product exported from anarchive', required = True)
+exportParser.add_argument('-eop', '--exportOptionsPlist', help = 'specifies a path to a plist file that configure archive exporting', required = True)
+exportParser.set_defaults(func = exportArchive)
 
 # create the parser for the 'distribute' command
 distributeParser = subparsers.add_parser('distribute', help = 'distribute ipa file to test server/AppStore')
