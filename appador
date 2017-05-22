@@ -145,8 +145,8 @@ distributeParser.set_defaults(func = distribute)
 
 # create the parser for the 'ignite' command
 igniteParser = subparsers.add_parser('ignite', help = 'automatically archive, export ipa and distribute')
-igniteParser.add_argument('--path', help = 'project/workspace path', required = True)
-igniteParser.add_argument('server', help = 'the server to upload', nargs ='?', choices = ['firm', 'AppStore'], default = 'firm')
+igniteParser.add_argument('-p', '--path', help = 'project/workspace path', required = True)
+igniteParser.add_argument('--platform', help = 'the platform to upload', nargs ='?', choices = ['firm', 'AppStore'], default = 'firm')
 igniteParser.set_defaults(func = ignite)
 
 # create the parser for the 'iTunesConnects' command
